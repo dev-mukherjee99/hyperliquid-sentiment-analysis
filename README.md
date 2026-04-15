@@ -26,3 +26,16 @@ pip install pandas numpy matplotlib scipy scikit-learn
 - Performance analysis
 - Segmentation insights
 - Strategy recommendations
+
+Due to GitHub file size limits, the datasets are not uploaded directly.
+
+You can access them here:
+
+- Fear/Greed Index: https://alternative.me/crypto/fear-and-greed-index/
+- Hyperliquid Trade Data: (mention source provided in assignment)
+
+Or place the CSV files manually in the same folder as the notebook before running.
+
+File names expected:
+- fear_greed_index.csv
+- historical_data (1).csv
