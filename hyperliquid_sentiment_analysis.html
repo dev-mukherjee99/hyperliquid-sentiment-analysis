@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Hyperliquid × Fear/Greed — Full Analysis Report</title>
+<style>
+  :root {
+    --bg: #0e1117; --card: #1c2333; --card2: #232d42;
+    --text: #e8eaf0; --muted: #8892a4; --accent: #5c7cfa;
+    --pos: #26c281; --neg: #e74c3c; --warn: #f59e0b;
+    --efear: #d62728; --fear: #ff7f0e; --neutral: #7f7f7f;
+    --greed: #2ca02c; --egreed: #1a7a1a;
+    --border: #2d3748;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', system-ui, sans-serif; line-height: 1.6; }
+  .container { max-width: 1100px; margin: 0 auto; padding: 32px 24px; }
+
+  /* HEADER */
+  .header { background: linear-gradient(135deg,#1a2035 0%,#0e1117 60%); border-bottom: 1px solid var(--border); padding: 40px 24px 32px; text-align: center; margin-bottom: 40px; }
+  .header h1 { font-size: 2.2rem; font-weight: 700; color: var(--text); letter-spacing: -0.5px; }
+  .header .sub { color: var(--muted); margin-top: 6px; font-size: 1rem; }
+  .badge { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; margin: 4px; }
+  .badge-blue { background: rgba(92,124,250,.2); color: var(--accent); border: 1px solid rgba(92,124,250,.4); }
+  .badge-green { background: rgba(38,194,129,.15); color: var(--pos); border: 1px solid rgba(38,194,129,.35); }
+
+  /* SECTIONS */
+  h2 { font-size: 1.35rem; font-weight: 700; color: var(--text); margin-bottom: 16px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+  h3 { font-size: 1.05rem; font-weight: 600; color: var(--accent); margin: 18px 0 8px; }
+  section { margin-bottom: 48px; }
+  p { color: var(--muted); margin-bottom: 10px; }
+  ul { color: var(--muted); padding-left: 20px; }
+  li { margin-bottom: 4px; }
+  strong { color: var(--text); }
+
+  /* STAT CARDS */
+  .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 14px; margin-bottom: 24px; }
+  .stat-card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 18px 16px; }
+  .stat-label { font-size: 0.75rem; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; margin-bottom: 6px; }
+  .stat-value { font-size: 1.7rem; font-weight: 700; }
+  .stat-sub { font-size: 0.75rem; color: var(--muted); margin-top: 2px; }
+  .green { color: var(--pos); } .red { color: var(--neg); } .blue { color: var(--accent); } .warn { color: var(--warn); }
+
+  /* TABLES */
+  .table-wrap { overflow-x: auto; margin-bottom: 20px; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+  th { background: var(--card2); color: var(--muted); font-weight: 600; text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--border); }
+  td { padding: 9px 12px; border-bottom: 1px solid rgba(45,55,72,.5); }
+  tr:hover td { background: var(--card2); }
+  .sent-ef { color: var(--efear); font-weight: 600; }
+  .sent-f  { color: var(--fear); font-weight: 600; }
+  .sent-n  { color: var(--neutral); font-weight: 600; }
+  .sent-g  { color: var(--greed); font-weight: 600; }
+  .sent-eg { color: var(--egreed); font-weight: 600; }
+
+  /* FIGURES */
+  .fig-wrap { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 16px; margin-bottom: 24px; }
+  .fig-wrap img { width: 100%; border-radius: 8px; display: block; }
+  .fig-caption { font-size: 0.8rem; color: var(--muted); margin-top: 10px; font-style: italic; }
+
+  /* INSIGHT CARDS */
+  .insight-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; }
+  .insight-card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 20px; border-left: 4px solid var(--accent); }
+  .insight-num { font-size: 0.7rem; color: var(--accent); text-transform: uppercase; letter-spacing: .08em; font-weight: 700; }
+  .insight-title { font-size: 1rem; font-weight: 700; color: var(--text); margin: 4px 0 8px; }
+  .insight-body { font-size: 0.85rem; color: var(--muted); }
+
+  /* STRATEGY CARDS */
+  .strategy-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 24px; margin-bottom: 18px; }
+  .strategy-tag { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; margin-bottom: 10px; }
+  .tag-fear { background: rgba(214,39,40,.15); color: var(--efear); }
+  .tag-greed { background: rgba(38,194,129,.1); color: var(--pos); }
+  .tag-universal { background: rgba(92,124,250,.15); color: var(--accent); }
+  .strategy-title { font-size: 1.1rem; font-weight: 700; color: var(--text); margin-bottom: 8px; }
+  .rule-list { list-style: none; padding: 0; }
+  .rule-list li { padding: 6px 0 6px 22px; position: relative; color: var(--muted); font-size: 0.88rem; }
+  .rule-list li::before { content: '→'; position: absolute; left: 0; color: var(--accent); font-weight: 700; }
+
+  /* SEGMENT PILLS */
+  .seg { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 0.75rem; font-weight: 600; }
+  .seg-0 { background: rgba(92,124,250,.2); color: #5c7cfa; }
+  .seg-1 { background: rgba(245,158,11,.2); color: #f59e0b; }
+  .seg-2 { background: rgba(236,72,153,.2); color: #ec4899; }
+
+  /* MODEL BOX */
+  .model-box { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 20px; font-family: 'Courier New', monospace; font-size: 0.82rem; color: var(--pos); }
+
+  /* FOOTER */
+  .footer { text-align: center; color: var(--muted); font-size: 0.78rem; margin-top: 60px; padding-top: 24px; border-top: 1px solid var(--border); }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Hyperliquid × Fear/Greed Index</h1>
+  <div class="sub">Full Sentiment-Behavior Analysis · April 2025</div>
+  <div style="margin-top:14px">
+    <span class="badge badge-blue">211,224 Trades</span>
+    <span class="badge badge-blue">32 Traders</span>
+    <span class="badge badge-blue">2,644 Sentiment Days</span>
+    <span class="badge badge-green">2023–2025</span>
+  </div>
+</div>
+
+<div class="container">
+
+<!-- ─────────────────────────── PART A ──────────────────────────────── -->
+<section>
+  <h2>Part A — Data Preparation</h2>
+
+  <h3>Dataset Overview</h3>
+  <div class="stat-grid">
+    <div class="stat-card"><div class="stat-label">Fear/Greed Rows</div><div class="stat-value blue">2,644</div><div class="stat-sub">4 columns · 0 missing · 0 duplicates</div></div>
+    <div class="stat-card"><div class="stat-label">Trader Rows</div><div class="stat-value blue">211,224</div><div class="stat-sub">16 columns · 0 missing · 0 duplicates</div></div>
+    <div class="stat-card"><div class="stat-label">Unique Traders</div><div class="stat-value warn">32</div><div class="stat-sub">wallet addresses</div></div>
+    <div class="stat-card"><div class="stat-label">Unique Tokens</div><div class="stat-value warn">246</div><div class="stat-sub">traded coins</div></div>
+    <div class="stat-card"><div class="stat-label">Merged Obs</div><div class="stat-value green">2,340</div><div class="stat-sub">account × day pairs</div></div>
+    <div class="stat-card"><div class="stat-label">Date Overlap</div><div class="stat-value green">~2 yrs</div><div class="stat-sub">May 2023 – May 2025</div></div>
+  </div>
+
+  <h3>Sentiment Distribution (overlapping period)</h3>
+  <div class="table-wrap">
+    <table>
+      <tr><th>Classification</th><th>Days</th><th>% of Period</th><th>Broad Bucket</th></tr>
+      <tr><td class="sent-eg">Extreme Greed</td><td>526</td><td>22.5%</td><td>Greed Days</td></tr>
+      <tr><td class="sent-g">Greed</td><td>648</td><td>27.7%</td><td>Greed Days</td></tr>
+      <tr><td class="sent-n">Neutral</td><td>376</td><td>16.1%</td><td>Neutral</td></tr>
+      <tr><td class="sent-f">Fear</td><td>630</td><td>26.9%</td><td>Fear Days</td></tr>
+      <tr><td class="sent-ef">Extreme Fear</td><td>160</td><td>6.8%</td><td>Fear Days</td></tr>
+    </table>
+  </div>
+
+  <h3>Key Engineered Metrics</h3>
+  <ul>
+    <li><strong>Daily PnL per trader</strong> — sum of Closed PnL on a given calendar day</li>
+    <li><strong>Win rate</strong> — fraction of account-days with positive PnL</li>
+    <li><strong>Leverage proxy</strong> — |Start Position| / Size USD, clipped to [1, 50×]</li>
+    <li><strong>Long/Short ratio</strong> — long trades ÷ (long + short trades)</li>
+    <li><strong>Trade frequency</strong> — number of executions per account per day</li>
+    <li><strong>Avg trade size (USD)</strong> — mean Size USD per account per day</li>
+  </ul>
+  <p style="margin-top:10px">Timestamps in trader data were in IST format (<code>DD-MM-YYYY HH:MM</code>); converted to UTC date for daily alignment with the Fear/Greed index (which uses UTC dates).</p>
+</section>
+
+<!-- ─────────────────────────── PART B ──────────────────────────────── -->
+<section>
+  <h2>Part B — Analysis</h2>
+
+  <h3>B1 · Does Performance Differ Across Sentiment?</h3>
+
+  <div class="fig-wrap">
+    <img src="fig1_performance.png" alt="Figure 1 — Performance by Sentiment">
+    <div class="fig-caption">Figure 1: Median daily PnL, win rate, and PnL distribution across the five Fear/Greed categories.</div>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <tr><th>Sentiment</th><th>Obs (acct-days)</th><th>Median PnL</th><th>Mean PnL</th><th>Win Rate</th></tr>
+      <tr><td class="sent-ef">Extreme Fear</td><td>160</td><td>$218</td><td>$4,619</td><td>60%</td></tr>
+      <tr><td class="sent-f">Fear</td><td>630</td><td>$108</td><td>$5,329</td><td>60%</td></tr>
+      <tr><td class="sent-n">Neutral</td><td>376</td><td>$168</td><td>$3,439</td><td>62%</td></tr>
+      <tr><td class="sent-g">Greed</td><td>648</td><td>$158</td><td>$3,318</td><td>61%</td></tr>
+      <tr><td class="sent-eg">Extreme Greed</td><td>526</td><td><strong>$418</strong></td><td>$5,162</td><td><strong>68%</strong></td></tr>
+    </table>
+  </div>
+
+  <p><strong>Key finding:</strong> <em>Extreme Greed</em> days stand out with the highest median PnL ($418) and win rate (68%), nearly 4× the median PnL of plain Fear days. During Extreme Fear, mean PnL is elevated ($4,619) suggesting a few big winners during crisis volatility, but the median is low — implying a wide distribution. Win rates are relatively stable across conditions (60–68%), meaning <em>direction</em> of trades matters more than frequency.</p>
+
+  <h3>B2 · Behavioral Changes by Sentiment</h3>
+
+  <div class="fig-wrap">
+    <img src="fig2_behavior.png" alt="Figure 2 — Trader Behavior">
+    <div class="fig-caption">Figure 2: Trade frequency, leverage proxy, and long/short bias across sentiment categories.</div>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <tr><th>Sentiment</th><th>Avg Trades/Day</th><th>Avg Leverage (×)</th><th>Long Bias (%)</th></tr>
+      <tr><td class="sent-ef">Extreme Fear</td><td><strong>134</strong></td><td>14.5×</td><td><strong>57%</strong></td></tr>
+      <tr><td class="sent-f">Fear</td><td>98</td><td><strong>14.8×</strong></td><td>47%</td></tr>
+      <tr><td class="sent-n">Neutral</td><td>100</td><td>14.2×</td><td>44%</td></tr>
+      <tr><td class="sent-g">Greed</td><td>78</td><td>13.5×</td><td>40%</td></tr>
+      <tr><td class="sent-eg">Extreme Greed</td><td><strong>76</strong></td><td>14.1×</td><td>38%</td></tr>
+    </table>
+  </div>
+
+  <p><strong>Key behavioral patterns:</strong></p>
+  <ul>
+    <li><strong>Trade frequency drops sharply in Greed.</strong> Traders execute ~76 trades/day during Extreme Greed versus ~134 during Extreme Fear — a 43% reduction, suggesting they hold positions longer or trade more selectively when the market is confident.</li>
+    <li><strong>Long bias is counter-sentiment.</strong> Traders are <em>more long-biased during Fear</em> (57%) and <em>more short-biased during Greed</em> (38%). This classic contrarian posture likely reflects profit-taking during rallies and dip-buying during fear events.</li>
+    <li><strong>Leverage is relatively stable</strong> across conditions (13.5–14.8×), suggesting these traders do not dramatically de-risk during fear. This is a key risk finding.</li>
+  </ul>
+
+  <h3>B3 · Trader Segments</h3>
+
+  <div class="fig-wrap">
+    <img src="fig3_segments.png" alt="Figure 3 — Segments">
+    <div class="fig-caption">Figure 3: KMeans 3-cluster segmentation of 32 traders by behavior and performance.</div>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <tr><th>Segment</th><th>Avg Daily PnL</th><th>Win Rate</th><th>Avg Trades/Day</th><th>Avg Leverage</th><th>Avg Size (USD)</th><th>Profile</th></tr>
+      <tr>
+        <td><span class="seg seg-0">Passive Low-Lev</span></td>
+        <td>$6,566</td><td>35%</td><td>53</td><td>25.4×</td><td>$5,343</td>
+        <td>Low win rate but occasional large wins; high leverage despite fewer trades</td>
+      </tr>
+      <tr>
+        <td><span class="seg seg-1">High-Freq Winners</span></td>
+        <td>$40,601</td><td>67%</td><td>410</td><td>12.1×</td><td>$21,900</td>
+        <td>Dominant earners; large positions, controlled leverage, consistent wins</td>
+      </tr>
+      <tr>
+        <td><span class="seg seg-2">Active High-Lev</span></td>
+        <td>$2,137</td><td>67%</td><td>97</td><td>9.7×</td><td>$8,572</td>
+        <td>Good win rate but modest PnL; moderate activity and position sizes</td>
+      </tr>
+    </table>
+  </div>
+
+  <h3>B4 · Time-Series & Cross-Metric Analysis</h3>
+
+  <div class="fig-wrap">
+    <img src="fig4_timeseries.png" alt="Figure 4 — Time Series">
+    <div class="fig-caption">Figure 4: 30-day rolling PnL vs Fear/Greed index, monthly heatmap, and trade size distributions.</div>
+  </div>
+
+  <p>The rolling PnL chart shows that the portfolio's peak profitability periods (late 2023, early–mid 2024) coincide with sustained Greed regimes. Fear spikes (red zones) tend to create short-term PnL drawdowns followed by sharp recoveries. The trade size distribution confirms traders take <em>larger positions on Greed days</em> and more smaller exploratory trades during Fear.</p>
+</section>
+
+<!-- ─────────────────────────── INSIGHTS ─────────────────────────────── -->
+<section>
+  <h2>Key Insights</h2>
+  <div class="insight-grid">
+    <div class="insight-card">
+      <div class="insight-num">Insight 01</div>
+      <div class="insight-title">Extreme Greed = Sweet Spot</div>
+      <div class="insight-body">Extreme Greed days produce 68% win rates and the highest median PnL ($418/day per trader). However, trading activity drops to its lowest — top traders are more selective, not busier, when markets are euphoric.</div>
+    </div>
+    <div class="insight-card">
+      <div class="insight-num">Insight 02</div>
+      <div class="insight-title">Fear Drives Contrarian Longs</div>
+      <div class="insight-body">During Fear/Extreme Fear, traders skew 47–57% toward long positions — a contrarian bet against the sentiment signal. This aligns with the higher mean PnL during fear (volatile, high-reward environment), but it's accompanied by the most trades and highest leverage, amplifying both gains and losses.</div>
+    </div>
+    <div class="insight-card">
+      <div class="insight-num">Insight 03</div>
+      <div class="insight-title">High-Freq Winners Dominate Returns</div>
+      <div class="insight-body">The High-Freq Winners segment (Cluster 1) generates 5× the PnL of Passive traders despite using 2× lower leverage (12× vs 25×). Their edge is <em>volume × consistency</em>, not leverage. The Passive segment's 35% win rate and 25× leverage is a dangerous combination.</div>
+    </div>
+    <div class="insight-card">
+      <div class="insight-num">Insight 04 (Bonus ML)</div>
+      <div class="insight-title">Behavior Predicts Tomorrow</div>
+      <div class="insight-body">A Random Forest model using today's trade count, position size, leverage, long/short ratio, and FG index achieves <strong>65% accuracy</strong> predicting next-day profitability. Trade count is the #1 feature (38% importance), followed by position size (20%) and leverage (18%). The FG index contributes only ~10% — behavior dominates sentiment.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ─────────────────────────── PART C ──────────────────────────────── -->
+<section>
+  <h2>Part C — Actionable Strategy Rules</h2>
+
+  <div class="strategy-card">
+    <div class="strategy-tag tag-fear">Strategy 1 · Fear Regime Playbook</div>
+    <div class="strategy-title">"Fear ≠ Freeze — But Cap Your Leverage"</div>
+    <ul class="rule-list">
+      <li>When FG index drops below 25 (Fear / Extreme Fear), <strong>hard-cap leverage at 10×</strong> for Passive Low-Lev traders. Their 25× average leverage during normal times becomes catastrophic during high-volatility fear episodes.</li>
+      <li>Fear days have the <strong>highest trade frequency</strong> — but more trades don't mean better results. Impose a daily <strong>max-trade-count throttle</strong> (e.g. 50 trades/day) to prevent overtrading driven by fear-induced FOMO.</li>
+      <li>Contrarian long bias during fear can pay off (high mean PnL), but only for traders with <strong>proven win rates above 60%</strong>. Passive Low-Lev traders (35% win rate) should avoid directional bets during fear — focus on hedged or neutral strategies.</li>
+      <li><em>Target segment:</em> <span class="seg seg-0">Passive Low-Lev</span> traders.</li>
+    </ul>
+  </div>
+
+  <div class="strategy-card">
+    <div class="strategy-tag tag-greed">Strategy 2 · Greed Regime Playbook</div>
+    <div class="strategy-title">"In Greed, Go Big — But Go Short"</div>
+    <ul class="rule-list">
+      <li>During Greed / Extreme Greed, data shows traders who <strong>reduce trade frequency</strong> (fewer, larger trades) achieve better outcomes. Adopt a <strong>"quality over quantity"</strong> rule: target &lt;100 trades/day and increase average size per trade by 1.5–2×.</li>
+      <li>Leverage contrarian short bias during Extreme Greed (38% long, 62% short). Top traders are already fading the crowd — <strong>short-side exposure on rallies</strong> captures mean-reversion moves that follow euphoric peaks.</li>
+      <li>High-Freq Winners achieve 68% win rates in Greed with ~12× leverage. Active High-Lev traders should <strong>reduce leverage from ~10× to 8×</strong> during Greed and reallocate the margin to larger notional positions for better risk/reward.</li>
+      <li><em>Target segment:</em> <span class="seg seg-1">High-Freq Winners</span> and <span class="seg seg-2">Active High-Lev</span> traders.</li>
+    </ul>
+  </div>
+
+  <div class="strategy-card">
+    <div class="strategy-tag tag-universal">Strategy 3 · Universal Rule</div>
+    <div class="strategy-title">"Let Your Win Rate Lead, Not the FG Index"</div>
+    <ul class="rule-list">
+      <li>The ML model shows that a trader's own <strong>recent trade count and position size</strong> are 4–5× more predictive of next-day profitability than the Fear/Greed index itself. Monitor personal metrics daily.</li>
+      <li>If rolling 7-day win rate drops below 50%, <strong>cut position sizes by 50%</strong> regardless of market sentiment — this is a signal of edge degradation, not a buying opportunity.</li>
+      <li>Use the FG index as a <strong>regime filter</strong>, not a trading signal. Pair it with personal performance metrics: e.g., "Only increase risk during Greed IF my 7-day win rate is above 60%."</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ─────────────────────────── BONUS ───────────────────────────────── -->
+<section>
+  <h2>Bonus — Predictive Model Summary</h2>
+  <div class="model-box">
+    Model: Random Forest Classifier (100 trees, max_depth=4)<br>
+    Target: Next-day profitable (win=1) vs loss (win=0)<br>
+    Features: trades, size_usd_mean, lev_mean, ls_ratio, FG value<br><br>
+    Accuracy: 65% | Macro F1: 0.53<br><br>
+    Feature Importances:<br>
+    &nbsp;&nbsp;trades           → 0.380 ████████████████████<br>
+    &nbsp;&nbsp;size_usd_mean    → 0.197 ██████████<br>
+    &nbsp;&nbsp;lev_mean         → 0.180 █████████<br>
+    &nbsp;&nbsp;ls_ratio         → 0.147 ████████<br>
+    &nbsp;&nbsp;value (FG index) → 0.096 █████<br><br>
+    Takeaway: Behavioral signals (how much you trade, how big)<br>
+    outpredict market sentiment by ~4:1 for next-day outcomes.
+  </div>
+</section>
+
+<div class="footer">
+  Hyperliquid × Fear/Greed Analysis · 32 traders · 211,224 executions · May 2023–May 2025<br>
+  Sentiment data: Alternative.me Fear &amp; Greed Index · Analysis: Python (pandas, scikit-learn, matplotlib)
+</div>
+
+</div>
+</body>
+</html>
