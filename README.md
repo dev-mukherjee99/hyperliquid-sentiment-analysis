@@ -31,8 +31,8 @@ Due to GitHub file size limits, the datasets are not uploaded directly.
 
 You can access them here:
 
-- Fear/Greed Index: https://alternative.me/crypto/fear-and-greed-index/
-- Hyperliquid Trade Data: (mention source provided in assignment)
+- Fear/Greed Index:  https://drive.google.com/file/d/1PgQC0tO8XN-wqkNyghWc_-mnrYv_nhSf/view?usp=sharing
+- Hyperliquid Trade Data: https://drive.google.com/file/d/1IAfLZwu6rJzyWKgBToqwSmmVYU6VbjVs/view?usp=sharing
 
 Or place the CSV files manually in the same folder as the notebook before running.
 
